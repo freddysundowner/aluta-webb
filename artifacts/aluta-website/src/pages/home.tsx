@@ -396,8 +396,8 @@ export default function Home() {
                 </div>
                 <div>
                   <h4 className="font-bold text-xl mb-2 font-display">Email</h4>
-                  <a href="mailto:hello@aluta.co.ke" className="text-muted-foreground hover:text-foreground text-lg transition-colors">
-                    hello@aluta.co.ke
+                  <a href="mailto:hello@alutatechnologies.com" className="text-muted-foreground hover:text-foreground text-lg transition-colors">
+                    hello@alutatechnologies.com
                   </a>
                 </div>
               </motion.div>
