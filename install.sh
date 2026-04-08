@@ -15,7 +15,7 @@ DOMAIN="alutatechnologies.com"
 WWW_DOMAIN="www.alutatechnologies.com"
 SITE_ROOT="/var/www/alutatechnologies"
 API_DIR="/opt/aluta-api"
-API_PORT="8080"
+API_PORT="3001"
 NODE_VERSION="22"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
@@ -161,7 +161,7 @@ server {
 
     # API proxy — full URI passed to Express unchanged
     location /api {
-        proxy_pass         http://127.0.0.1:8080;
+        proxy_pass         http://127.0.0.1:3001;
         proxy_http_version 1.1;
         proxy_set_header   Host              $host;
         proxy_set_header   X-Real-IP         $remote_addr;
