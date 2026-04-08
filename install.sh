@@ -47,18 +47,13 @@ fi
 # ── Collect secrets ──────────────────────────────────────────────────────────
 section "Configuration"
 
-if [[ -z "${BREVO_API_KEY:-}" ]]; then
-  read -rsp "  Enter your BREVO_API_KEY: " BREVO_API_KEY; echo
-fi
-[[ -z "$BREVO_API_KEY" ]] && fatal "BREVO_API_KEY is required."
+BREVO_API_KEY="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"
+SSL_EMAIL="githumbi3fred@gmail.com"
 
 if [[ -z "${SESSION_SECRET:-}" ]]; then
   SESSION_SECRET=$(openssl rand -hex 32)
   warn "Generated SESSION_SECRET — save this somewhere safe: $SESSION_SECRET"
 fi
-
-read -rp "  Enter your email for SSL certificate (Let's Encrypt): " SSL_EMAIL
-[[ -z "$SSL_EMAIL" ]] && fatal "SSL email is required."
 
 info "Domain:   $DOMAIN"
 info "Package:  $SCRIPT_DIR"
