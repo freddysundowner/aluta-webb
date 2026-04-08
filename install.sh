@@ -2,9 +2,13 @@
 set -euo pipefail
 
 # ─────────────────────────────────────────────────────────────────────────────
-# Aluta Technology Ventures — Production Deployment Script
-# Targets: Ubuntu 22.04 / 24.04 LTS (or any Debian-based system)
-# Usage:   sudo bash deploy.sh
+# Aluta Technology Ventures — Server Install Script
+# Run this INSIDE the unzipped aluta-deploy/ folder:
+#   unzip aluta-deploy.zip -d aluta-deploy
+#   cd aluta-deploy
+#   sudo bash install.sh
+#
+# The server needs no build tools — everything is pre-built in this package.
 # ─────────────────────────────────────────────────────────────────────────────
 
 DOMAIN="alutatechnologies.com"
@@ -13,7 +17,7 @@ SITE_ROOT="/var/www/alutatechnologies"
 API_DIR="/opt/aluta-api"
 API_PORT="8080"
 NODE_VERSION="22"
-REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PACKAGE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # ── Colours ──────────────────────────────────────────────────────────────────
 GREEN='\033[0;32m'; YELLOW='\033[1;33m'; RED='\033[0;31m'; NC='\033[0m'
@@ -22,8 +26,10 @@ warn()    { echo -e "${YELLOW}[!]${NC} $*"; }
 fatal()   { echo -e "${RED}[✗]${NC} $*"; exit 1; }
 section() { echo -e "\n${GREEN}━━━ $* ━━━${NC}"; }
 
-# ── Root check ───────────────────────────────────────────────────────────────
-[[ $EUID -ne 0 ]] && fatal "Run this script as root: sudo bash deploy.sh"
+# ── Sanity checks ─────────────────────────────────────────────────────────────
+[[ $EUID -ne 0 ]] && fatal "Run as root: sudo bash install.sh"
+[[ ! -d "$PACKAGE_DIR/public" ]] && fatal "Missing public/ folder. Run from inside the unzipped aluta-deploy/ directory."
+[[ ! -d "$PACKAGE_DIR/api" ]]    && fatal "Missing api/ folder. Run from inside the unzipped aluta-deploy/ directory."
 
 # ── Collect secrets ──────────────────────────────────────────────────────────
 section "Configuration"
@@ -35,22 +41,22 @@ fi
 
 if [[ -z "${SESSION_SECRET:-}" ]]; then
   SESSION_SECRET=$(openssl rand -hex 32)
-  warn "Generated SESSION_SECRET (save this safely): $SESSION_SECRET"
+  warn "Generated SESSION_SECRET — save this somewhere safe: $SESSION_SECRET"
 fi
 
 read -rp "  Enter your email for SSL certificate (Let's Encrypt): " SSL_EMAIL
 [[ -z "$SSL_EMAIL" ]] && fatal "SSL email is required."
 
-info "Domain:  $DOMAIN"
-info "Repo:    $REPO_DIR"
+info "Domain:   $DOMAIN"
+info "Package:  $PACKAGE_DIR"
 
-# ── System packages ──────────────────────────────────────────────────────────
+# ── System packages ───────────────────────────────────────────────────────────
 section "Installing system packages"
 apt-get update -qq
-apt-get install -y -qq curl git rsync nginx certbot python3-certbot-nginx ufw
+apt-get install -y -qq rsync nginx certbot python3-certbot-nginx ufw curl
 
-# ── Node.js ──────────────────────────────────────────────────────────────────
-section "Installing Node.js $NODE_VERSION"
+# ── Node.js (runtime only — no build tools needed) ───────────────────────────
+section "Installing Node.js $NODE_VERSION runtime"
 if ! command -v node &>/dev/null || \
    [[ "$(node -e 'process.stdout.write(process.version.split(".")[0].slice(1))')" -lt "$NODE_VERSION" ]]; then
   curl -fsSL "https://deb.nodesource.com/setup_${NODE_VERSION}.x" | bash -
@@ -58,44 +64,19 @@ if ! command -v node &>/dev/null || \
 fi
 info "Node $(node --version)"
 
-# ── pnpm ─────────────────────────────────────────────────────────────────────
-section "Installing pnpm"
-if ! command -v pnpm &>/dev/null; then
-  npm install -g pnpm@latest --quiet
-fi
-info "pnpm $(pnpm --version)"
-
-# ── Build the project ─────────────────────────────────────────────────────────
-section "Installing dependencies & building"
-cd "$REPO_DIR"
-pnpm install --frozen-lockfile
-
-# Build frontend
-# PORT and BASE_PATH are required by vite.config.ts; NODE_ENV=production
-# prevents Replit-specific dev plugins from being loaded.
-info "Building frontend…"
-PORT=3000 BASE_PATH=/ NODE_ENV=production \
-  pnpm --filter @workspace/aluta-website run build
-
-# Build API server
-info "Building API server…"
-pnpm --filter @workspace/api-server run build
-
-info "Build complete"
-
 # ── Deploy static files ───────────────────────────────────────────────────────
-section "Deploying static files to $SITE_ROOT"
+section "Deploying website to $SITE_ROOT"
 mkdir -p "$SITE_ROOT"
-rsync -a --delete "$REPO_DIR/artifacts/aluta-website/dist/public/" "$SITE_ROOT/"
+rsync -a --delete "$PACKAGE_DIR/public/" "$SITE_ROOT/"
 chown -R www-data:www-data "$SITE_ROOT"
 info "Static files deployed"
 
 # ── Deploy API server ─────────────────────────────────────────────────────────
 section "Deploying API server to $API_DIR"
 mkdir -p "$API_DIR"
-rsync -a --delete "$REPO_DIR/artifacts/api-server/dist/" "$API_DIR/dist/"
+rsync -a --delete "$PACKAGE_DIR/api/" "$API_DIR/dist/"
 
-# Write environment file (root-readable only; systemd reads it before user switch)
+# Environment file — root-readable only (systemd reads before user switch)
 cat > "$API_DIR/.env" <<EOF
 PORT=$API_PORT
 NODE_ENV=production
@@ -105,11 +86,10 @@ EOF
 chmod 600 "$API_DIR/.env"
 info "API files deployed"
 
-# ── Systemd service for the API ───────────────────────────────────────────────
+# ── Systemd service ───────────────────────────────────────────────────────────
 section "Creating systemd service: aluta-api"
 
-# Resolve node path now (before writing the unit file) so it works even if
-# the binary was just installed and isn't yet on sudo's PATH.
+# Resolve the node binary path now — avoids stale PATH issues under sudo
 NODE_BIN="$(command -v node || true)"
 [[ -z "$NODE_BIN" ]] && NODE_BIN="/usr/bin/node"
 
@@ -136,19 +116,15 @@ EOF
 
 systemctl daemon-reload
 systemctl enable aluta-api
-# restart (not just start) so redeployments also pick up new code
 systemctl restart aluta-api
 
-# Give the process a moment then confirm it's running
 sleep 3
 if ! systemctl is-active --quiet aluta-api; then
-  fatal "aluta-api failed to start. Run: journalctl -u aluta-api -n 50"
+  fatal "aluta-api failed to start. Check logs: journalctl -u aluta-api -n 50"
 fi
 info "aluta-api service started and healthy"
 
-# ── Nginx configuration ───────────────────────────────────────────────────────
-# Written using a single-quoted heredoc so nginx variables ($host etc.)
-# are preserved verbatim. Domain names and paths are hardcoded deliberately.
+# ── Nginx ─────────────────────────────────────────────────────────────────────
 section "Configuring nginx for $DOMAIN"
 
 cat > /etc/nginx/sites-available/alutatechnologies <<'NGINX'
@@ -160,8 +136,7 @@ server {
     root /var/www/alutatechnologies;
     index index.html;
 
-    # ── API proxy ────────────────────────────────────────────────────────────
-    # Matches /api and /api/* — passes the full URI to Express unchanged.
+    # API proxy — full URI passed to Express unchanged
     location /api {
         proxy_pass         http://127.0.0.1:8080;
         proxy_http_version 1.1;
@@ -171,26 +146,22 @@ server {
         proxy_set_header   X-Forwarded-Proto $scheme;
     }
 
-    # ── Long-lived cache for hashed assets ──────────────────────────────────
-    # Placed before the SPA catch-all so the regex takes priority for assets.
+    # Long-lived cache for hashed static assets
     location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot|webp)$ {
         expires 1y;
         add_header Cache-Control "public, immutable";
         try_files $uri =404;
     }
 
-    # ── SPA fallback ─────────────────────────────────────────────────────────
-    # All other paths serve index.html so React Router handles routing.
+    # SPA fallback — React Router handles all other paths
     location / {
         try_files $uri $uri/ /index.html;
     }
 }
 NGINX
 
-# Enable the site, remove the default placeholder
 ln -sf /etc/nginx/sites-available/alutatechnologies /etc/nginx/sites-enabled/alutatechnologies
 rm -f /etc/nginx/sites-enabled/default
-
 nginx -t && systemctl reload nginx
 info "nginx configured"
 
@@ -199,12 +170,12 @@ section "Configuring firewall"
 ufw allow OpenSSH
 ufw allow 'Nginx Full'
 ufw --force enable
-info "Firewall rules applied (SSH + HTTP + HTTPS)"
+info "Firewall: SSH + HTTP + HTTPS allowed"
 
-# ── SSL certificate via Let's Encrypt ────────────────────────────────────────
+# ── SSL ───────────────────────────────────────────────────────────────────────
 section "Obtaining SSL certificate"
 warn "DNS A records for $DOMAIN and $WWW_DOMAIN must point to this server's IP."
-read -rp "  Press ENTER once DNS is live, or Ctrl+C to skip SSL for now: "
+read -rp "  Press ENTER once DNS is pointing here, or Ctrl+C to skip SSL: "
 
 certbot --nginx \
   --non-interactive \
@@ -214,26 +185,24 @@ certbot --nginx \
   -d "$WWW_DOMAIN" \
   --redirect
 
-info "SSL certificate installed — HTTPS enabled with auto-redirect"
+info "SSL certificate installed — HTTPS active with auto-redirect"
 
-# Ensure auto-renewal. certbot.timer is available on Ubuntu 22.04+ when
-# certbot is installed via apt. Use grep to reliably detect it, then fall
-# back to a cron job on older systems.
+# Auto-renewal
 if systemctl list-unit-files | grep -q "certbot.timer"; then
   systemctl enable --now certbot.timer
   info "certbot.timer enabled for auto-renewal"
 else
   (crontab -l 2>/dev/null; echo "0 3 * * * certbot renew --quiet --post-hook 'systemctl reload nginx'") \
     | sort -u | crontab -
-  info "Cron job added for auto-renewal (certbot.timer not found)"
+  info "Cron job added for auto-renewal"
 fi
 
 # ── Done ──────────────────────────────────────────────────────────────────────
-section "Deployment complete"
+section "Installation complete"
 echo ""
 echo -e "  ${GREEN}Website:${NC}  https://$DOMAIN"
 echo -e "  ${GREEN}API:${NC}      http://127.0.0.1:$API_PORT  (internal only)"
 echo -e "  ${GREEN}Logs:${NC}     journalctl -u aluta-api -f"
 echo -e "  ${GREEN}Renew:${NC}    certbot renew --dry-run"
 echo ""
-info "To redeploy after code changes, pull the latest code and re-run this script."
+info "To update the site, download a new package zip and re-run this script."
