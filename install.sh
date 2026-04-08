@@ -176,9 +176,9 @@ server {
         try_files $uri =404;
     }
 
-    # All paths — check for pre-rendered .html file first, then default index.html.
-    # index.html itself is the static homepage (set by package.sh after the build).
-    # /privacy-policy and /terms are served as standalone static HTML files.
+    # SPA fallback — checks for .html extension before falling back to React Router.
+    # This ensures /privacy-policy and /terms serve pre-rendered static HTML
+    # that is visible to crawlers (e.g. Meta's verification bot) without JS.
     location / {
         try_files $uri $uri.html $uri/ /index.html;
     }
