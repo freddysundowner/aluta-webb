@@ -176,13 +176,9 @@ server {
         try_files $uri =404;
     }
 
-    # Root — serve fully static home.html (readable by all crawlers, no JS needed).
-    location = / {
-        try_files /home.html /index.html;
-    }
-
-    # All other paths — check for pre-rendered .html file first, then SPA fallback.
-    # This ensures /privacy-policy and /terms serve static HTML to crawlers.
+    # All paths — check for pre-rendered .html file first, then default index.html.
+    # index.html itself is the static homepage (set by package.sh after the build).
+    # /privacy-policy and /terms are served as standalone static HTML files.
     location / {
         try_files $uri $uri.html $uri/ /index.html;
     }

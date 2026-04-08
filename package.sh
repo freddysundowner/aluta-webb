@@ -31,7 +31,12 @@ section "Building frontend"
 # NODE_ENV=production skips Replit-only dev plugins.
 PORT=3000 BASE_PATH=/ NODE_ENV=production \
   pnpm --filter @workspace/aluta-website run build
-info "Frontend built → artifacts/aluta-website/dist/public/"
+
+# Replace the React SPA entry point with the fully static homepage.
+# home.html is plain HTML readable by all crawlers without JavaScript.
+cp "$REPO_DIR/artifacts/aluta-website/public/home.html" \
+   "$REPO_DIR/artifacts/aluta-website/dist/public/index.html"
+info "Frontend built → artifacts/aluta-website/dist/public/ (index.html = static homepage)"
 
 # ── Build API server ───────────────────────────────────────────────────────────
 section "Building API server"
