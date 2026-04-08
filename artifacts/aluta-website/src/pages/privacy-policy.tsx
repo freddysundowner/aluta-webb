@@ -24,7 +24,7 @@ export default function PrivacyPolicy() {
           <section>
             <h2 className="text-xl font-semibold mb-3">1. Introduction</h2>
             <p>
-              Aluta Technology Ventures Limited ("Aluta," "we," "us," or "our") is a technology company incorporated in Kenya (Company No. PVT-Y2UG5E5), registered at Ng'enda House, Oginga Odinga Road, P.O. Box 41, Nakuru 20100, Kenya. The company is co-owned and directed by <strong>John Mbugua Mochu</strong> and <strong>Fredrick Mundia Githumbi</strong>, each holding equal shares of the company.
+              Aluta Technology Ventures Limited ("Aluta," "we," "us," or "our") is a technology company incorporated in Kenya (Company No. PVT-Y2UG5E5), registered at Ng'enda House, Oginga Odinga Road, P.O. Box 41, Nakuru 20100, Kenya. The company is owned and directed by <strong>Fredrick Mundia Githumbi</strong>.
             </p>
             <p className="mt-3">
               Our official website is <a href="https://alutatechnologies.com" className="text-primary underline">alutatechnologies.com</a>. This Privacy Policy describes how we collect, use, disclose, and safeguard your personal information when you use our products and services, including <strong>Pro-Suite</strong> (pro-suite.co), TokShopLive (tokshoplive.com), PointifyPOS (pointifypos.com), and BankyKit (bankykit.com), as well as when you interact with us via messaging platforms including WhatsApp.
@@ -139,7 +139,7 @@ export default function PrivacyPolicy() {
             <p>If you have any questions, concerns, or requests regarding this Privacy Policy, please contact us:</p>
             <div className="mt-3 space-y-1">
               <p><strong>Aluta Technology Ventures Limited</strong></p>
-              <p>Directors: John Mbugua Mochu &amp; Fredrick Mundia Githumbi</p>
+              <p>Director: Fredrick Mundia Githumbi</p>
               <p>Ng'enda House, Oginga Odinga Road</p>
               <p>P.O. Box 41, Nakuru 20100, Kenya</p>
               <p>Phone: +254 715 363 474</p>

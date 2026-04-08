@@ -24,7 +24,7 @@ export default function Terms() {
           <section>
             <h2 className="text-xl font-semibold mb-3">1. Agreement to Terms</h2>
             <p>
-              These Terms of Service ("Terms") constitute a legally binding agreement between you ("User," "you," or "your") and <strong>Aluta Technology Ventures Limited</strong> ("Aluta," "we," "us," or "our"), a private limited company incorporated in Kenya (Company No. PVT-Y2UG5E5), with its registered office at Ng'enda House, Oginga Odinga Road, P.O. Box 41, Nakuru 20100, Kenya. The company is co-directed and co-owned by <strong>John Mbugua Mochu</strong> and <strong>Fredrick Mundia Githumbi</strong>. Our official website is <a href="https://alutatechnologies.com" className="text-primary underline">alutatechnologies.com</a>.
+              These Terms of Service ("Terms") constitute a legally binding agreement between you ("User," "you," or "your") and <strong>Aluta Technology Ventures Limited</strong> ("Aluta," "we," "us," or "our"), a private limited company incorporated in Kenya (Company No. PVT-Y2UG5E5), with its registered office at Ng'enda House, Oginga Odinga Road, P.O. Box 41, Nakuru 20100, Kenya. The company is owned and directed by <strong>Fredrick Mundia Githumbi</strong>. Our official website is <a href="https://alutatechnologies.com" className="text-primary underline">alutatechnologies.com</a>.
             </p>
             <p className="mt-3">
               By accessing or using any of our platforms — including <strong>Pro-Suite</strong> (pro-suite.co), TokShopLive (tokshoplive.com), PointifyPOS (pointifypos.com), and BankyKit (bankykit.com) — you confirm that you have read, understood, and agree to be bound by these Terms.
@@ -153,7 +153,7 @@ export default function Terms() {
             <p>For questions or concerns about these Terms, contact us at:</p>
             <div className="mt-3 space-y-1">
               <p><strong>Aluta Technology Ventures Limited</strong></p>
-              <p>Directors: John Mbugua Mochu &amp; Fredrick Mundia Githumbi</p>
+              <p>Director: Fredrick Mundia Githumbi</p>
               <p>Ng'enda House, Oginga Odinga Road</p>
               <p>P.O. Box 41, Nakuru 20100, Kenya</p>
               <p>Phone: +254 715 363 474</p>

@@ -185,7 +185,7 @@ export default function Home() {
             </motion.h2>
             <motion.div variants={fadeUp} className="space-y-6 text-muted-foreground text-lg leading-relaxed font-light">
               <p>
-                Incorporated in Nakuru in 2019, Aluta Technology Ventures Limited was co-founded by <strong className="text-foreground">John Mbugua Mochu</strong> and <strong className="text-foreground">Fredrick Mundia Githumbi</strong> with a simple premise: African businesses deserve world-class software that understands their unique operational realities.
+                Incorporated in Nakuru in 2019, Aluta Technology Ventures Limited was founded by <strong className="text-foreground">Fredrick Mundia Githumbi</strong> with a simple premise: African businesses deserve world-class software that understands their unique operational realities.
               </p>
               <p>
                 We don't just build apps. We build ecosystems. From helping a local retailer manage inventory to enabling developers to integrate seamless payments, our suite of tools is the digital infrastructure for the next generation of African enterprise.
