@@ -135,7 +135,7 @@ export default function Home() {
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
               <span className="relative inline-flex rounded-full h-3 w-3 bg-primary"></span>
             </span>
-            Nakuru to the World
+            Aluta Ventures - where solutions count
           </motion.div>
           <motion.h1 variants={fadeUp} className="text-5xl md:text-7xl lg:text-8xl xl:text-9xl font-display font-bold leading-[1.05] tracking-tighter mb-8">
             Code that powers <br/>
@@ -446,8 +446,8 @@ export default function Home() {
             </div>
           </div>
           <div className="flex gap-6 text-sm text-muted-foreground font-medium">
-            <a href="#" className="hover:text-foreground transition-colors">Privacy</a>
-            <a href="#" className="hover:text-foreground transition-colors">Terms</a>
+            <a href="/privacy-policy" className="hover:text-foreground transition-colors">Privacy Policy</a>
+            <a href="/terms" className="hover:text-foreground transition-colors">Terms of Service</a>
             <a href="#" className="hover:text-foreground transition-colors">Twitter</a>
             <a href="#" className="hover:text-foreground transition-colors">LinkedIn</a>
           </div>
