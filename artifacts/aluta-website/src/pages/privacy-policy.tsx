@@ -24,10 +24,10 @@ export default function PrivacyPolicy() {
           <section>
             <h2 className="text-xl font-semibold mb-3">1. Introduction</h2>
             <p>
-              Aluta Technology Ventures Limited ("Aluta," "we," "us," or "our") is a technology company incorporated in Kenya (Company No. PVT-Y2UG5E5), registered at Ng'enda House, Oginga Odinga Road, P.O. Box 41, Nakuru 20100, Kenya.
+              Aluta Technology Ventures Limited ("Aluta," "we," "us," or "our") is a technology company incorporated in Kenya (Company No. PVT-Y2UG5E5), registered at Ng'enda House, Oginga Odinga Road, P.O. Box 41, Nakuru 20100, Kenya. The company is co-owned and directed by <strong>John Mbugua Mochu</strong> and <strong>Fredrick Mundia Githumbi</strong>, each holding equal shares of the company.
             </p>
             <p className="mt-3">
-              This Privacy Policy describes how we collect, use, disclose, and safeguard your personal information when you use our products and services, including <strong>Pro-Suite</strong> (pro-suite.co), TokShopLive (tokshoplive.com), PointifyPOS (pointifypos.com), and BankyKit (bankykit.com), as well as when you interact with us via messaging platforms including WhatsApp.
+              Our official website is <a href="https://alutatechnologies.com" className="text-primary underline">alutatechnologies.com</a>. This Privacy Policy describes how we collect, use, disclose, and safeguard your personal information when you use our products and services, including <strong>Pro-Suite</strong> (pro-suite.co), TokShopLive (tokshoplive.com), PointifyPOS (pointifypos.com), and BankyKit (bankykit.com), as well as when you interact with us via messaging platforms including WhatsApp.
             </p>
             <p className="mt-3">
               By accessing or using any of our services, you agree to the terms of this Privacy Policy.
@@ -74,7 +74,7 @@ export default function PrivacyPolicy() {
               <li>Sending transactional messages initiated by user actions within our platform.</li>
             </ul>
             <p className="mt-3">
-              By providing your WhatsApp number and opting into WhatsApp messaging, you consent to receiving such communications from us. You may opt out at any time by replying <strong>STOP</strong> to any message or by contacting us at <a href="mailto:info@alutaventures.com" className="text-primary underline">info@alutaventures.com</a>.
+              By providing your WhatsApp number and opting into WhatsApp messaging, you consent to receiving such communications from us. You may opt out at any time by replying <strong>STOP</strong> to any message or by contacting us at <a href="mailto:info@alutatechnologies.com" className="text-primary underline">info@alutatechnologies.com</a>.
             </p>
             <p className="mt-3">
               We do not sell or share your WhatsApp number or message content with third parties for their own marketing purposes. WhatsApp communications are governed by <a href="https://www.whatsapp.com/legal/privacy-policy" target="_blank" rel="noopener noreferrer" className="text-primary underline">Meta's Privacy Policy</a>.
@@ -117,7 +117,7 @@ export default function PrivacyPolicy() {
               <li>Withdraw consent where processing is based on consent.</li>
               <li>Lodge a complaint with a data protection authority.</li>
             </ul>
-            <p className="mt-3">To exercise these rights, contact us at <a href="mailto:info@alutaventures.com" className="text-primary underline">info@alutaventures.com</a>.</p>
+            <p className="mt-3">To exercise these rights, contact us at <a href="mailto:info@alutatechnologies.com" className="text-primary underline">info@alutatechnologies.com</a>.</p>
           </section>
 
           <section>
@@ -139,10 +139,12 @@ export default function PrivacyPolicy() {
             <p>If you have any questions, concerns, or requests regarding this Privacy Policy, please contact us:</p>
             <div className="mt-3 space-y-1">
               <p><strong>Aluta Technology Ventures Limited</strong></p>
+              <p>Directors: John Mbugua Mochu &amp; Fredrick Mundia Githumbi</p>
               <p>Ng'enda House, Oginga Odinga Road</p>
               <p>P.O. Box 41, Nakuru 20100, Kenya</p>
               <p>Phone: +254 715 363 474</p>
-              <p>Email: <a href="mailto:info@alutaventures.com" className="text-primary underline">info@alutaventures.com</a></p>
+              <p>Website: <a href="https://alutatechnologies.com" className="text-primary underline">alutatechnologies.com</a></p>
+              <p>Email: <a href="mailto:info@alutatechnologies.com" className="text-primary underline">info@alutatechnologies.com</a></p>
             </div>
           </section>
 
