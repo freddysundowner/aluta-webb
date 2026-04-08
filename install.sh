@@ -61,7 +61,7 @@ read -rp "  Enter your email for SSL certificate (Let's Encrypt): " SSL_EMAIL
 [[ -z "$SSL_EMAIL" ]] && fatal "SSL email is required."
 
 info "Domain:   $DOMAIN"
-info "Package:  $PACKAGE_DIR"
+info "Package:  $SCRIPT_DIR"
 
 # ── System packages ───────────────────────────────────────────────────────────
 section "Installing system packages"
