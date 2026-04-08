@@ -17,7 +17,7 @@ SITE_ROOT="/var/www/alutatechnologies"
 API_DIR="/opt/aluta-api"
 API_PORT="8080"
 NODE_VERSION="22"
-PACKAGE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # ── Colours ──────────────────────────────────────────────────────────────────
 GREEN='\033[0;32m'; YELLOW='\033[1;33m'; RED='\033[0;31m'; NC='\033[0m'
@@ -26,10 +26,23 @@ warn()    { echo -e "${YELLOW}[!]${NC} $*"; }
 fatal()   { echo -e "${RED}[✗]${NC} $*"; exit 1; }
 section() { echo -e "\n${GREEN}━━━ $* ━━━${NC}"; }
 
-# ── Sanity checks ─────────────────────────────────────────────────────────────
+# ── Detect source layout ──────────────────────────────────────────────────────
+# Supports two modes:
+#   1. Unzipped package:  ./public/  and ./api/
+#   2. Repo root (after package.sh build): ./artifacts/aluta-website/dist/public/  and ./artifacts/api-server/dist/
 [[ $EUID -ne 0 ]] && fatal "Run as root: sudo bash install.sh"
-[[ ! -d "$PACKAGE_DIR/public" ]] && fatal "Missing public/ folder. Run from inside the unzipped aluta-deploy/ directory."
-[[ ! -d "$PACKAGE_DIR/api" ]]    && fatal "Missing api/ folder. Run from inside the unzipped aluta-deploy/ directory."
+
+if [[ -d "$SCRIPT_DIR/public" && -d "$SCRIPT_DIR/api" ]]; then
+  PUBLIC_SRC="$SCRIPT_DIR/public/"
+  API_SRC="$SCRIPT_DIR/api/"
+  info "Source: pre-built package"
+elif [[ -d "$SCRIPT_DIR/artifacts/aluta-website/dist/public" && -d "$SCRIPT_DIR/artifacts/api-server/dist" ]]; then
+  PUBLIC_SRC="$SCRIPT_DIR/artifacts/aluta-website/dist/public/"
+  API_SRC="$SCRIPT_DIR/artifacts/api-server/dist/"
+  info "Source: repo build output"
+else
+  fatal "Cannot find built files. Run 'bash package.sh' first, then re-run this script."
+fi
 
 # ── Collect secrets ──────────────────────────────────────────────────────────
 section "Configuration"
@@ -67,14 +80,14 @@ info "Node $(node --version)"
 # ── Deploy static files ───────────────────────────────────────────────────────
 section "Deploying website to $SITE_ROOT"
 mkdir -p "$SITE_ROOT"
-rsync -a --delete "$PACKAGE_DIR/public/" "$SITE_ROOT/"
+rsync -a --delete "$PUBLIC_SRC" "$SITE_ROOT/"
 chown -R www-data:www-data "$SITE_ROOT"
 info "Static files deployed"
 
 # ── Deploy API server ─────────────────────────────────────────────────────────
 section "Deploying API server to $API_DIR"
 mkdir -p "$API_DIR"
-rsync -a --delete "$PACKAGE_DIR/api/" "$API_DIR/dist/"
+rsync -a --delete "$API_SRC" "$API_DIR/dist/"
 
 # Environment file — root-readable only (systemd reads before user switch)
 cat > "$API_DIR/.env" <<EOF

@@ -1,0 +1,75 @@
+root@vmi3102280:/var/www/aluta-webb# ls
+artifacts  attached_assets  install.sh  lib  package.json  package.sh  pnpm-lock.yaml  pnpm-workspace.yaml  replit.md  scripts  tsconfig.base.json  tsconfig.json
+root@vmi3102280:/var/www/aluta-webb# bash package.sh 
+
+━━━ Installing dependencies ━━━
+Scope: all 9 workspace projects
+Lockfile is up to date, resolution step is skipped
+Packages: +486
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+   ╭──────────────────────────────────────────╮
+   │                                          │
+   │   Update available! 10.32.1 → 10.33.0.   │
+   │   Changelog: https://pnpm.io/v/10.33.0   │
+   │     To update, run: pnpm add -g pnpm     │
+   │                                          │
+   ╰──────────────────────────────────────────╯
+
+Progress: resolved 486, reused 458, downloaded 28, added 486, done
+
+devDependencies:
++ prettier 3.8.1
++ typescript 5.9.3
+
+. preinstall$ sh -c 'rm -f package-lock.json yarn.lock; case "$npm_config_user_agent" in pnpm/*) ;; *) echo "Use pnpm instead" >&2; exit 1 ;; esac'
+└─ Done in 83ms
+Done in 7.9s using pnpm v10.32.1
+[✓] Dependencies ready
+
+━━━ Building frontend ━━━
+
+> @workspace/aluta-website@0.0.0 build /var/www/aluta-webb/artifacts/aluta-website
+> vite build --config vite.config.ts
+
+vite v7.3.1 building client environment for production...
+src/components/ui/tooltip.tsx (2:0): Error when using sourcemap for reporting an error: Can't resolve original location of error.
+✓ 2170 modules transformed.
+dist/public/index.html                        0.75 kB │ gzip:   0.42 kB
+dist/public/assets/products-yXcRyaca.png  1,105.79 kB
+dist/public/assets/hero-bg-RIyfHPWB.png   1,320.61 kB
+dist/public/assets/index-BuUK4Tm6.css       128.55 kB │ gzip:  20.25 kB
+dist/public/assets/index-SBFJ0ueo.js        482.61 kB │ gzip: 152.51 kB
+✓ built in 10.43s
+[✓] Frontend built → artifacts/aluta-website/dist/public/
+
+━━━ Building API server ━━━
+
+> @workspace/api-server@0.0.0 build /var/www/aluta-webb/artifacts/api-server
+> node ./build.mjs
+
+
+  dist/index.mjs                       1.4mb ⚠️
+  dist/pino-worker.mjs               153.4kb
+  dist/pino-file.mjs                 142.1kb
+  dist/pino-pretty.mjs               114.6kb
+  dist/thread-stream-worker.mjs        7.3kb
+  dist/index.mjs.map                   2.1mb
+  dist/pino-worker.mjs.map           256.9kb
+  dist/pino-file.mjs.map             229.0kb
+  dist/pino-pretty.mjs.map           203.9kb
+  dist/thread-stream-worker.mjs.map   12.0kb
+
+⚡ Done in 463ms
+[✓] API built → artifacts/api-server/dist/
+
+━━━ Assembling package ━━━
+[✓] Staged: 7.8M total
+
+━━━ Creating aluta-deploy.zip ━━━
+package.sh: line 59: zip: command not found
+root@vmi3102280:/var/www/aluta-webb# bash install.sh 
+[✗] Missing public/ folder. Run from inside the unzipped aluta-deploy/ directory.
+root@vmi3102280:/var/www/aluta-webb# ls
+artifacts  attached_assets  install.sh  lib  node_modules  package.json  package.sh  pnpm-lock.yaml  pnpm-workspace.yaml  replit.md  scripts  tsconfig.base.json  tsconfig.json
+root@vmi3102280:/var/www/aluta-webb# 

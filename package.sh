@@ -40,6 +40,12 @@ info "API built → artifacts/api-server/dist/"
 
 # ── Assemble the deployment package ───────────────────────────────────────────
 section "Assembling package"
+
+# Ensure zip is available
+if ! command -v zip &>/dev/null; then
+  apt-get install -y -qq zip 2>/dev/null || { echo "Installing zip via apt failed. Run: sudo apt-get install zip"; exit 1; }
+fi
+
 STAGING=$(mktemp -d)
 trap 'rm -rf "$STAGING"' EXIT
 
