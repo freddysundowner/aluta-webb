@@ -176,9 +176,11 @@ server {
         try_files $uri =404;
     }
 
-    # SPA fallback — React Router handles all other paths
+    # SPA fallback — checks for .html extension before falling back to React Router.
+    # This ensures /privacy-policy and /terms serve pre-rendered static HTML
+    # that is visible to crawlers (e.g. Meta's verification bot) without JS.
     location / {
-        try_files $uri $uri/ /index.html;
+        try_files $uri $uri.html $uri/ /index.html;
     }
 }
 NGINX
