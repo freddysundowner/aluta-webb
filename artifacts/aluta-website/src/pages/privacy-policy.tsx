@@ -74,7 +74,7 @@ export default function PrivacyPolicy() {
               <li>Sending transactional messages initiated by user actions within our platform.</li>
             </ul>
             <p className="mt-3">
-              By providing your WhatsApp number and opting into WhatsApp messaging, you consent to receiving such communications from us. You may opt out at any time by replying <strong>STOP</strong> to any message or by contacting us at <a href="mailto:hello@aluta.co.ke" className="text-primary underline">hello@aluta.co.ke</a>.
+              By providing your WhatsApp number and opting into WhatsApp messaging, you consent to receiving such communications from us. You may opt out at any time by replying <strong>STOP</strong> to any message or by contacting us at <a href="mailto:hello@alutatechnologies.com" className="text-primary underline">hello@alutatechnologies.com</a>.
             </p>
             <p className="mt-3">
               We do not sell or share your WhatsApp number or message content with third parties for their own marketing purposes. WhatsApp communications are governed by <a href="https://www.whatsapp.com/legal/privacy-policy" target="_blank" rel="noopener noreferrer" className="text-primary underline">Meta's Privacy Policy</a>.
@@ -117,7 +117,7 @@ export default function PrivacyPolicy() {
               <li>Withdraw consent where processing is based on consent.</li>
               <li>Lodge a complaint with a data protection authority.</li>
             </ul>
-            <p className="mt-3">To exercise these rights, contact us at <a href="mailto:hello@aluta.co.ke" className="text-primary underline">hello@aluta.co.ke</a>.</p>
+            <p className="mt-3">To exercise these rights, contact us at <a href="mailto:hello@alutatechnologies.com" className="text-primary underline">hello@alutatechnologies.com</a>.</p>
           </section>
 
           <section>
@@ -144,7 +144,7 @@ export default function PrivacyPolicy() {
               <p>P.O. Box 41, Nakuru 20100, Kenya</p>
               <p>Phone: +254 715 363 474</p>
               <p>Website: <a href="https://alutatechnologies.com" className="text-primary underline">alutatechnologies.com</a></p>
-              <p>Email: <a href="mailto:hello@aluta.co.ke" className="text-primary underline">hello@aluta.co.ke</a></p>
+              <p>Email: <a href="mailto:hello@alutatechnologies.com" className="text-primary underline">hello@alutatechnologies.com</a></p>
             </div>
           </section>
 
