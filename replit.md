@@ -2,7 +2,18 @@
 
 ## Overview
 
-pnpm workspace monorepo using TypeScript. Each package manages its own dependencies.
+pnpm workspace monorepo using TypeScript. Contains the Aluta Technology Ventures company website.
+
+## Artifacts
+
+- **aluta-website** — Company website for Aluta Technology Ventures Limited (react-vite, preview path: `/`)
+
+## Products Showcased
+
+- TokShopLive (tokshoplive.com) — Live commerce platform
+- PointifyPOS (pointifypos.com) — Point-of-sale system
+- BankyKit (bankykit.com) — Fintech toolkit
+- Pro-Suite (pro-suite.co) — Business productivity suite
 
 ## Stack
 
@@ -10,6 +21,7 @@ pnpm workspace monorepo using TypeScript. Each package manages its own dependenc
 - **Node.js version**: 24
 - **Package manager**: pnpm
 - **TypeScript version**: 5.9
+- **Frontend**: React + Vite + Tailwind CSS + Framer Motion
 - **API framework**: Express 5
 - **Database**: PostgreSQL + Drizzle ORM
 - **Validation**: Zod (`zod/v4`), `drizzle-zod`

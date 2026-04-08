@@ -1,0 +1,14 @@
+uploads = []
+outputs = []
+
+[[generated]]
+id = "HoLcI_x8reBLvd1RGAp6p"
+uri = "file://artifacts/aluta-website/src/assets/hero-bg.png"
+type = "image"
+title = "Afro-futurist tech network background"
+
+[[generated]]
+id = "GLHP-5IblW8r0k6ApkFhR"
+uri = "file://artifacts/aluta-website/src/assets/products.png"
+type = "image"
+title = "Floating digital products ecosystem"
