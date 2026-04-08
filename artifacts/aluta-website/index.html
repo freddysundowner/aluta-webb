@@ -58,6 +58,92 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   </head>
   <body>
+    <!--
+      Static content block — visible to crawlers and bots that do not execute JavaScript.
+      Hidden from users once React mounts into #root.
+    -->
+    <noscript>
+      <style>
+        body { background:#0a0a0a; color:#e5e5e5; font-family:system-ui,sans-serif; margin:0; }
+        .ns-wrap { max-width:900px; margin:0 auto; padding:3rem 2rem; }
+        nav { background:#111; padding:1rem 2rem; border-bottom:1px solid #1f1f1f; display:flex; align-items:center; gap:1rem; }
+        .logo-box { background:#f97316; color:#fff; font-weight:900; width:2rem; height:2rem; display:inline-flex; align-items:center; justify-content:center; border-radius:0.4rem; }
+        h1 { font-size:2.5rem; font-weight:800; color:#fff; margin:2rem 0 1rem; }
+        h2 { font-size:1.4rem; font-weight:700; color:#fff; margin:2rem 0 0.5rem; }
+        p  { color:#bbb; line-height:1.7; margin-bottom:1rem; }
+        a  { color:#f97316; }
+        ul { color:#bbb; padding-left:1.5rem; line-height:1.9; }
+        .card { background:#111; border:1px solid #222; border-radius:1rem; padding:1.5rem; margin-bottom:1rem; }
+        footer { border-top:1px solid #1a1a1a; padding:2rem; text-align:center; color:#555; font-size:0.875rem; margin-top:4rem; }
+      </style>
+      <nav>
+        <span class="logo-box">A</span>
+        <strong style="color:#fff">Aluta Technology Ventures</strong>
+      </nav>
+      <div class="ns-wrap">
+        <h1>Code that powers the continent.</h1>
+        <p>
+          Aluta Technology Ventures Limited is a Kenyan technology company (Company No. PVT-Y2UG5E5)
+          building digital products that drive commerce, retail, fintech, and productivity across Africa.
+        </p>
+        <p>
+          Founded by <strong style="color:#fff">Fredrick Mundia Githumbi</strong> and headquartered at
+          Ng'enda House, Oginga Odinga Road, P.O. Box 41, Nakuru 20100, Kenya.
+          Phone: +254 715 363 474 &nbsp;|&nbsp;
+          Email: <a href="mailto:hello@alutatechnologies.com">hello@alutatechnologies.com</a> &nbsp;|&nbsp;
+          Website: <a href="https://alutatechnologies.com">alutatechnologies.com</a>
+        </p>
+
+        <h2>Our Products</h2>
+        <div class="card">
+          <strong style="color:#fff">Pro-Suite</strong> — <a href="https://pro-suite.co">pro-suite.co</a><br/>
+          An all-in-one business productivity suite for teams and companies, with WhatsApp Business API integration.
+        </div>
+        <div class="card">
+          <strong style="color:#fff">TokShopLive</strong> — <a href="https://tokshoplive.com">tokshoplive.com</a><br/>
+          A live commerce platform for selling products via livestream. TikTok Shop meets African social commerce.
+        </div>
+        <div class="card">
+          <strong style="color:#fff">PointifyPOS</strong> — <a href="https://pointifypos.com">pointifypos.com</a><br/>
+          A modern point-of-sale system designed for African small businesses and retail shops.
+        </div>
+        <div class="card">
+          <strong style="color:#fff">BankyKit</strong> — <a href="https://bankykit.com">bankykit.com</a><br/>
+          A fintech toolkit enabling developers and businesses to build banking and payments experiences.
+        </div>
+
+        <h2>About Us</h2>
+        <p>
+          Incorporated in Nakuru, Kenya in 2019, Aluta Technology Ventures Limited was founded with a
+          simple premise: African businesses deserve world-class software that understands their unique
+          operational realities. We build ecosystems — from helping a local retailer manage inventory
+          to enabling developers to integrate seamless payments.
+        </p>
+
+        <h2>WhatsApp Business API</h2>
+        <p>
+          Aluta Technology Ventures Limited uses the WhatsApp Business API (Meta Platforms, Inc.)
+          to send service notifications, transactional messages, and customer support communications
+          through Pro-Suite. Users may opt out at any time by replying STOP.
+        </p>
+
+        <h2>Contact</h2>
+        <p>
+          <strong style="color:#fff">Aluta Technology Ventures Limited</strong><br/>
+          Director: Fredrick Mundia Githumbi<br/>
+          Ng'enda House, Oginga Odinga Road, P.O. Box 41, Nakuru 20100, Kenya<br/>
+          Phone: +254 715 363 474<br/>
+          Email: <a href="mailto:hello@alutatechnologies.com">hello@alutatechnologies.com</a>
+        </p>
+
+        <footer>
+          &copy; 2025 Aluta Technology Ventures Limited. All rights reserved. &nbsp;|&nbsp;
+          <a href="/privacy-policy">Privacy Policy</a> &nbsp;|&nbsp;
+          <a href="/terms">Terms of Service</a>
+        </footer>
+      </div>
+    </noscript>
+
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
