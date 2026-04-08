@@ -35,7 +35,7 @@ fi
 
 if [[ -z "${SESSION_SECRET:-}" ]]; then
   SESSION_SECRET=$(openssl rand -hex 32)
-  warn "Generated SESSION_SECRET (save this): $SESSION_SECRET"
+  warn "Generated SESSION_SECRET (save this safely): $SESSION_SECRET"
 fi
 
 read -rp "  Enter your email for SSL certificate (Let's Encrypt): " SSL_EMAIL
@@ -47,11 +47,12 @@ info "Repo:    $REPO_DIR"
 # ── System packages ──────────────────────────────────────────────────────────
 section "Installing system packages"
 apt-get update -qq
-apt-get install -y -qq curl git nginx certbot python3-certbot-nginx ufw
+apt-get install -y -qq curl git rsync nginx certbot python3-certbot-nginx ufw
 
 # ── Node.js ──────────────────────────────────────────────────────────────────
 section "Installing Node.js $NODE_VERSION"
-if ! command -v node &>/dev/null || [[ "$(node -e 'process.stdout.write(process.version.split(".")[0].slice(1))')" -lt "$NODE_VERSION" ]]; then
+if ! command -v node &>/dev/null || \
+   [[ "$(node -e 'process.stdout.write(process.version.split(".")[0].slice(1))')" -lt "$NODE_VERSION" ]]; then
   curl -fsSL "https://deb.nodesource.com/setup_${NODE_VERSION}.x" | bash -
   apt-get install -y -qq nodejs
 fi
@@ -69,7 +70,9 @@ section "Installing dependencies & building"
 cd "$REPO_DIR"
 pnpm install --frozen-lockfile
 
-# Build frontend (PORT and BASE_PATH required by vite.config.ts)
+# Build frontend
+# PORT and BASE_PATH are required by vite.config.ts; NODE_ENV=production
+# prevents Replit-specific dev plugins from being loaded.
 info "Building frontend…"
 PORT=3000 BASE_PATH=/ NODE_ENV=production \
   pnpm --filter @workspace/aluta-website run build
@@ -92,7 +95,7 @@ section "Deploying API server to $API_DIR"
 mkdir -p "$API_DIR"
 rsync -a --delete "$REPO_DIR/artifacts/api-server/dist/" "$API_DIR/dist/"
 
-# Environment file (only owner-readable)
+# Write environment file (root-readable only; systemd reads it before user switch)
 cat > "$API_DIR/.env" <<EOF
 PORT=$API_PORT
 NODE_ENV=production
@@ -126,10 +129,14 @@ WantedBy=multi-user.target
 EOF
 
 systemctl daemon-reload
-systemctl enable --now aluta-api
+systemctl enable aluta-api
+# restart (not just start) so redeployments also pick up new code
+systemctl restart aluta-api
 info "aluta-api service started"
 
-# ── Nginx configuration (HTTP — certbot will upgrade to HTTPS) ────────────────
+# ── Nginx configuration ───────────────────────────────────────────────────────
+# Written using a single-quoted heredoc so nginx variables ($host etc.)
+# are preserved verbatim. Domain names and paths are hardcoded deliberately.
 section "Configuring nginx for $DOMAIN"
 
 cat > /etc/nginx/sites-available/alutatechnologies <<'NGINX'
@@ -141,8 +148,9 @@ server {
     root /var/www/alutatechnologies;
     index index.html;
 
-    # Proxy /api to the Node.js API server
-    location /api/ {
+    # ── API proxy ────────────────────────────────────────────────────────────
+    # Matches /api and /api/* — passes the full URI to Express unchanged.
+    location /api {
         proxy_pass         http://127.0.0.1:8080;
         proxy_http_version 1.1;
         proxy_set_header   Host              $host;
@@ -151,22 +159,24 @@ server {
         proxy_set_header   X-Forwarded-Proto $scheme;
     }
 
-    # SPA fallback — all routes serve index.html
-    location / {
-        try_files $uri $uri/ /index.html;
-    }
-
-    # Cache static assets
-    location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)$ {
+    # ── Long-lived cache for hashed assets ──────────────────────────────────
+    # Placed before the SPA catch-all so the regex takes priority for assets.
+    location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot|webp)$ {
         expires 1y;
         add_header Cache-Control "public, immutable";
         try_files $uri =404;
     }
+
+    # ── SPA fallback ─────────────────────────────────────────────────────────
+    # All other paths serve index.html so React Router handles routing.
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
 }
 NGINX
 
-# Enable the site
-ln -sf /etc/nginx/sites-available/alutatechnologies /etc/nginx/sites-enabled/
+# Enable the site, remove the default placeholder
+ln -sf /etc/nginx/sites-available/alutatechnologies /etc/nginx/sites-enabled/alutatechnologies
 rm -f /etc/nginx/sites-enabled/default
 
 nginx -t && systemctl reload nginx
@@ -181,28 +191,34 @@ info "Firewall rules applied (SSH + HTTP + HTTPS)"
 
 # ── SSL certificate via Let's Encrypt ────────────────────────────────────────
 section "Obtaining SSL certificate"
-warn "Make sure DNS A records for $DOMAIN and $WWW_DOMAIN point to this server's IP before continuing."
-read -rp "  Press ENTER when DNS is pointing to this server, or Ctrl+C to skip SSL for now..."
+warn "DNS A records for $DOMAIN and $WWW_DOMAIN must point to this server's IP."
+read -rp "  Press ENTER once DNS is live, or Ctrl+C to skip SSL for now: "
 
 certbot --nginx \
   --non-interactive \
   --agree-tos \
   --email "$SSL_EMAIL" \
-  --domains "$DOMAIN,$WWW_DOMAIN" \
+  -d "$DOMAIN" \
+  -d "$WWW_DOMAIN" \
   --redirect
 
-info "SSL certificate installed — HTTPS enabled"
+info "SSL certificate installed — HTTPS enabled with auto-redirect"
 
-# Auto-renew
-systemctl enable --now certbot.timer 2>/dev/null || true
-(crontab -l 2>/dev/null; echo "0 3 * * * certbot renew --quiet --post-hook 'systemctl reload nginx'") | sort -u | crontab -
-info "Auto-renewal configured"
+# Ensure auto-renewal (certbot.timer may not exist on older systems, fall back to cron)
+if systemctl list-unit-files certbot.timer &>/dev/null; then
+  systemctl enable --now certbot.timer
+else
+  (crontab -l 2>/dev/null; echo "0 3 * * * certbot renew --quiet --post-hook 'systemctl reload nginx'") \
+    | sort -u | crontab -
+fi
+info "Certificate auto-renewal configured"
 
 # ── Done ──────────────────────────────────────────────────────────────────────
 section "Deployment complete"
 echo ""
 echo -e "  ${GREEN}Website:${NC}  https://$DOMAIN"
-echo -e "  ${GREEN}API:${NC}      http://127.0.0.1:$API_PORT/api"
+echo -e "  ${GREEN}API:${NC}      http://127.0.0.1:$API_PORT  (internal only)"
 echo -e "  ${GREEN}Logs:${NC}     journalctl -u aluta-api -f"
+echo -e "  ${GREEN}Renew:${NC}    certbot renew --dry-run"
 echo ""
-info "To redeploy after code changes, re-run this script."
+info "To redeploy after code changes, pull the latest code and re-run this script."
