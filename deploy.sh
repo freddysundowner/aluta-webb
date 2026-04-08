@@ -107,6 +107,12 @@ info "API files deployed"
 
 # ── Systemd service for the API ───────────────────────────────────────────────
 section "Creating systemd service: aluta-api"
+
+# Resolve node path now (before writing the unit file) so it works even if
+# the binary was just installed and isn't yet on sudo's PATH.
+NODE_BIN="$(command -v node || true)"
+[[ -z "$NODE_BIN" ]] && NODE_BIN="/usr/bin/node"
+
 cat > /etc/systemd/system/aluta-api.service <<EOF
 [Unit]
 Description=Aluta Technology Ventures API Server
@@ -117,7 +123,7 @@ Type=simple
 User=www-data
 WorkingDirectory=$API_DIR
 EnvironmentFile=$API_DIR/.env
-ExecStart=$(which node) --enable-source-maps $API_DIR/dist/index.mjs
+ExecStart=$NODE_BIN --enable-source-maps $API_DIR/dist/index.mjs
 Restart=always
 RestartSec=5
 StandardOutput=journal
@@ -132,7 +138,13 @@ systemctl daemon-reload
 systemctl enable aluta-api
 # restart (not just start) so redeployments also pick up new code
 systemctl restart aluta-api
-info "aluta-api service started"
+
+# Give the process a moment then confirm it's running
+sleep 3
+if ! systemctl is-active --quiet aluta-api; then
+  fatal "aluta-api failed to start. Run: journalctl -u aluta-api -n 50"
+fi
+info "aluta-api service started and healthy"
 
 # ── Nginx configuration ───────────────────────────────────────────────────────
 # Written using a single-quoted heredoc so nginx variables ($host etc.)
@@ -204,14 +216,17 @@ certbot --nginx \
 
 info "SSL certificate installed — HTTPS enabled with auto-redirect"
 
-# Ensure auto-renewal (certbot.timer may not exist on older systems, fall back to cron)
-if systemctl list-unit-files certbot.timer &>/dev/null; then
+# Ensure auto-renewal. certbot.timer is available on Ubuntu 22.04+ when
+# certbot is installed via apt. Use grep to reliably detect it, then fall
+# back to a cron job on older systems.
+if systemctl list-unit-files | grep -q "certbot.timer"; then
   systemctl enable --now certbot.timer
+  info "certbot.timer enabled for auto-renewal"
 else
   (crontab -l 2>/dev/null; echo "0 3 * * * certbot renew --quiet --post-hook 'systemctl reload nginx'") \
     | sort -u | crontab -
+  info "Cron job added for auto-renewal (certbot.timer not found)"
 fi
-info "Certificate auto-renewal configured"
 
 # ── Done ──────────────────────────────────────────────────────────────────────
 section "Deployment complete"
