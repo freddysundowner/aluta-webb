@@ -47,8 +47,23 @@ fi
 # ── Collect secrets ──────────────────────────────────────────────────────────
 section "Configuration"
 
-BREVO_API_KEY="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"
-SSL_EMAIL="githumbi3fred@gmail.com"
+# Load secrets from install.conf if present (never committed to git)
+CONF_FILE="$SCRIPT_DIR/install.conf"
+if [[ -f "$CONF_FILE" ]]; then
+  # shellcheck disable=SC1090
+  source "$CONF_FILE"
+  info "Loaded config from install.conf"
+fi
+
+if [[ -z "${BREVO_API_KEY:-}" ]]; then
+  read -rsp "  Enter your BREVO_API_KEY: " BREVO_API_KEY; echo
+fi
+[[ -z "$BREVO_API_KEY" ]] && fatal "BREVO_API_KEY is required."
+
+if [[ -z "${SSL_EMAIL:-}" ]]; then
+  read -rp "  Enter your SSL certificate email: " SSL_EMAIL
+fi
+[[ -z "$SSL_EMAIL" ]] && fatal "SSL email is required."
 
 if [[ -z "${SESSION_SECRET:-}" ]]; then
   SESSION_SECRET=$(openssl rand -hex 32)
