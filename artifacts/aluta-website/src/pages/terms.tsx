@@ -158,7 +158,7 @@ export default function Terms() {
               <p>P.O. Box 41, Nakuru 20100, Kenya</p>
               <p>Phone: +254 715 363 474</p>
               <p>Website: <a href="https://alutatechnologies.com" className="text-primary underline">alutatechnologies.com</a></p>
-              <p>Email: <a href="mailto:info@alutatechnologies.com" className="text-primary underline">info@alutatechnologies.com</a></p>
+              <p>Email: <a href="mailto:hello@aluta.co.ke" className="text-primary underline">hello@aluta.co.ke</a></p>
             </div>
           </section>
 
