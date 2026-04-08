@@ -176,9 +176,13 @@ server {
         try_files $uri =404;
     }
 
-    # SPA fallback — checks for .html extension before falling back to React Router.
-    # This ensures /privacy-policy and /terms serve pre-rendered static HTML
-    # that is visible to crawlers (e.g. Meta's verification bot) without JS.
+    # Root — serve fully static home.html (readable by all crawlers, no JS needed).
+    location = / {
+        try_files /home.html /index.html;
+    }
+
+    # All other paths — check for pre-rendered .html file first, then SPA fallback.
+    # This ensures /privacy-policy and /terms serve static HTML to crawlers.
     location / {
         try_files $uri $uri.html $uri/ /index.html;
     }
