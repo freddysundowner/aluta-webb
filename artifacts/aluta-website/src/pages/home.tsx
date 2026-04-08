@@ -405,33 +405,7 @@ export default function Home() {
           </div>
           
           <motion.div variants={fadeUp} className="lg:col-span-7">
-            <div className="bg-background border border-border/50 rounded-[2rem] p-8 lg:p-12 relative overflow-hidden shadow-2xl shadow-black/50">
-              <div className="absolute top-0 right-0 w-full h-2 bg-gradient-to-r from-primary via-secondary to-blue-500"></div>
-              <h3 className="text-3xl font-display font-bold mb-8">Send a message</h3>
-              <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                  <div className="space-y-3">
-                    <label className="text-sm font-bold text-muted-foreground uppercase tracking-wider">First Name</label>
-                    <input type="text" className="w-full bg-card border border-border rounded-xl px-5 py-4 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-shadow text-lg" placeholder="Jane" />
-                  </div>
-                  <div className="space-y-3">
-                    <label className="text-sm font-bold text-muted-foreground uppercase tracking-wider">Last Name</label>
-                    <input type="text" className="w-full bg-card border border-border rounded-xl px-5 py-4 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-shadow text-lg" placeholder="Doe" />
-                  </div>
-                </div>
-                <div className="space-y-3">
-                  <label className="text-sm font-bold text-muted-foreground uppercase tracking-wider">Email</label>
-                  <input type="email" className="w-full bg-card border border-border rounded-xl px-5 py-4 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-shadow text-lg" placeholder="jane@example.com" />
-                </div>
-                <div className="space-y-3">
-                  <label className="text-sm font-bold text-muted-foreground uppercase tracking-wider">Message</label>
-                  <textarea rows={5} className="w-full bg-card border border-border rounded-xl px-5 py-4 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-shadow resize-none text-lg" placeholder="How can we help you?"></textarea>
-                </div>
-                <button type="submit" className="w-full bg-foreground text-background hover:bg-primary hover:text-white font-bold rounded-xl px-6 py-5 text-lg transition-all duration-300 transform hover:translate-y-[-2px]">
-                  Send Message
-                </button>
-              </form>
-            </div>
+            <ContactForm />
           </motion.div>
         </motion.div>
       </section>
